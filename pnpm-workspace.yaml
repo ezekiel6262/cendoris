@@ -6,3 +6,5 @@ onlyBuiltDependencies:
   - sharp
   - keccak
   - secp256k1
+  - "@google/genai"
+  - protobufjs
