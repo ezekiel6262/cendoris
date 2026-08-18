@@ -1,0 +1,1 @@
+import type{Metadata}from"next";import"./globals.css";export const metadata:Metadata={title:"Cendoris — Programmable Capital Intelligence",description:"AI proposes. Deterministic policy validates. Non-custodial execution acts."};export default function Layout({children}:{children:React.ReactNode}){return <html lang="en"><body suppressHydrationWarning>{children}</body></html>}

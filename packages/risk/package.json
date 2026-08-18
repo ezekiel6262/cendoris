@@ -1,0 +1,1 @@
+{"name":"@cendoris/risk","version":"0.0.0","type":"module","exports":"./src/index.ts","dependencies":{"@cendoris/types":"workspace:*"}}

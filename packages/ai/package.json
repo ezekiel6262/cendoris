@@ -1,0 +1,1 @@
+{"name":"@cendoris/ai","version":"0.0.0","type":"module","exports":"./src/index.ts","dependencies":{"@google/genai":"^1.0.0"}}

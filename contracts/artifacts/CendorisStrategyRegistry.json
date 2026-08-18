@@ -1,0 +1,203 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        }
+      ],
+      "name": "StrategyDeactivated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "version",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxRisk",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "minLiquidityBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxAssetExposureBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxSlippageBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "bool",
+              "name": "automationAllowed",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct CendorisStrategyRegistry.Strategy",
+          "name": "strategy",
+          "type": "tuple"
+        }
+      ],
+      "name": "StrategyUpdated",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        }
+      ],
+      "name": "deactivate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "vault",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "version",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxRisk",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "minLiquidityBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxAssetExposureBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxSlippageBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "bool",
+              "name": "automationAllowed",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "active",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct CendorisStrategyRegistry.Strategy",
+          "name": "next",
+          "type": "tuple"
+        }
+      ],
+      "name": "setStrategy",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "strategies",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "version",
+          "type": "uint64"
+        },
+        {
+          "internalType": "uint16",
+          "name": "maxRisk",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "minLiquidityBps",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "maxAssetExposureBps",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "maxSlippageBps",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "automationAllowed",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "active",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600e575f80fd5b506107df8061001c5f395ff3fe608060405234801561000f575f80fd5b506004361061003f575f3560e01c8063086d46681461004357806339ebf823146100585780633ea053eb14610112575b5f80fd5b61005661005136600461056f565b610125565b005b6100c36100663660046105ae565b5f6020819052908152604090205467ffffffffffffffff81169061ffff600160401b8204811691600160501b8104821691600160601b8204811691600160701b81049091169060ff600160801b8204811691600160881b90041687565b6040805167ffffffffffffffff98909816885261ffff96871660208901529486168786015292851660608701529316608085015291151560a084015290151560c0830152519081900360e00190f35b6100566101203660046105ae565b6103fb565b336001600160a01b0316826001600160a01b0316638da5cb5b6040518163ffffffff1660e01b8152600401602060405180830381865afa15801561016b573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061018f91906105d0565b6001600160a01b0316146101dd5760405162461bcd60e51b815260206004820152601060248201526f7661756c74206f776e6572206f6e6c7960801b60448201526064015b60405180910390fd5b60646101ef6040830160208401610601565b61ffff1611158015610216575061271061020f6060830160408401610601565b61ffff1611155b801561023757506127106102306080830160608401610601565b61ffff1611155b801561025857506107d061025160a0830160808401610601565b61ffff1611155b6102975760405162461bcd60e51b815260206004820152601060248201526f696e76616c696420737472617465677960801b60448201526064016101d4565b6001600160a01b0382165f908152602081905260408120546102c49067ffffffffffffffff16600161061a565b90505f6102d636849003840184610672565b67ffffffffffffffff808416808352600160c084019081526001600160a01b0388165f81815260208181526040918290208751815492890151848a015160608b015160808c015160a08d015199511515600160881b0260ff60881b199a1515600160801b0260ff60801b1961ffff938416600160701b021662ffffff60701b19948416600160601b0261ffff60601b19968516600160501b029690961663ffffffff60501b1994909716600160401b0269ffffffffffffffffffff19909a1697909e169690961797909717169290921717169790971796909617939093169290921790935551929350917fb1bea78a1f652116064d83291d7b7032a6d7f4f40ac5b86d2797ece3469c1edb906103ed90859061072e565b60405180910390a350505050565b336001600160a01b0316816001600160a01b0316638da5cb5b6040518163ffffffff1660e01b8152600401602060405180830381865afa158015610441573d5f803e3d5ffd5b505050506040513d601f19601f8201168201806040525081019061046591906105d0565b6001600160a01b0316146104ae5760405162461bcd60e51b815260206004820152601060248201526f7661756c74206f776e6572206f6e6c7960801b60448201526064016101d4565b6001600160a01b0381165f9081526020819052604090208054600160881b900460ff166105085760405162461bcd60e51b8152602060048201526008602482015267696e61637469766560c01b60448201526064016101d4565b805460ff60881b198116825560405167ffffffffffffffff909116906001600160a01b038416907febc9f368821e6775b0657117146953c6178b1d2bdc4be21763dde3e02d26758a905f90a35050565b6001600160a01b038116811461056c575f80fd5b50565b5f80828403610100811215610582575f80fd5b833561058d81610558565b925060e0601f19820112156105a0575f80fd5b506020830190509250929050565b5f602082840312156105be575f80fd5b81356105c981610558565b9392505050565b5f602082840312156105e0575f80fd5b81516105c981610558565b803561ffff811681146105fc575f80fd5b919050565b5f60208284031215610611575f80fd5b6105c9826105eb565b67ffffffffffffffff818116838216019081111561064657634e487b7160e01b5f52601160045260245ffd5b92915050565b803567ffffffffffffffff811681146105fc575f80fd5b803580151581146105fc575f80fd5b5f60e0828403128015610683575f80fd5b5060405160e0810167ffffffffffffffff811182821017156106b357634e487b7160e01b5f52604160045260245ffd5b6040526106bf8361064c565b81526106cd602084016105eb565b60208201526106de604084016105eb565b60408201526106ef606084016105eb565b6060820152610700608084016105eb565b608082015261071160a08401610663565b60a082015261072260c08401610663565b60c08201529392505050565b5f60e08201905067ffffffffffffffff835116825261ffff602084015116602083015261ffff604084015116604083015261ffff606084015116606083015261ffff608084015116608083015260a083015161078e60a084018215159052565b5060c08301516107a260c084018215159052565b509291505056fea264697066735822122047c93626284b502519ac3110083989271f618206dd204ab95dc40fa91f9ed89564736f6c634300081a0033"
+}

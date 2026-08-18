@@ -1,0 +1,1 @@
+{"name":"@cendoris/api","version":"0.0.0","type":"module","scripts":{"demo":"tsx src/index.ts","build":"tsc --noEmit"},"dependencies":{"@cendoris/automation":"workspace:*"},"devDependencies":{"@types/node":"^22.10.2","tsx":"^4.20.3","typescript":"^5.9.2"}}

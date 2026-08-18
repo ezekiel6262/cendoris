@@ -1,0 +1,255 @@
+{
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "admin",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferStarted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "reportHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "reporter",
+          "type": "address"
+        }
+      ],
+      "name": "ReportPublished",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "reporter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "ReporterConfigured",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "reporter",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "enabled",
+          "type": "bool"
+        }
+      ],
+      "name": "configureReporter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "reportHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "isPublished",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pendingOwner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "reportHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "publish",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "name": "publishedAt",
+      "outputs": [
+        {
+          "internalType": "uint64",
+          "name": "",
+          "type": "uint64"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "reporters",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x608060405234801561000f575f80fd5b5060405161066a38038061066a83398101604081905261002e916100f7565b806001600160a01b03811661005c57604051631e4fbdf760e01b81525f600482015260240160405180910390fd5b6100658161008c565b506001600160a01b03165f908152600260205260409020805460ff19166001179055610124565b600180546001600160a01b03191690556100a5816100a8565b50565b5f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b5f60208284031215610107575f80fd5b81516001600160a01b038116811461011d575f80fd5b9392505050565b610539806101315f395ff3fe608060405234801561000f575f80fd5b506004361061009b575f3560e01c80638da5cb5b116100635780638da5cb5b14610126578063c1ed4b651461014a578063e30c39781461015d578063f2fde38b1461016e578063f7473ff414610181575f80fd5b80632cc1cd9e1461009f578063715018a6146100d657806379ba5097146100e05780637a94064a146100e85780638b2e6dcf14610113575b5f80fd5b6100c16100ad366004610493565b60026020525f908152604090205460ff1681565b60405190151581526020015b60405180910390f35b6100de6101c3565b005b6100de6101d6565b6100c16100f63660046104b3565b5f9081526003602052604090205467ffffffffffffffff16151590565b6100de6101213660046104b3565b61021f565b5f546001600160a01b03165b6040516001600160a01b0390911681526020016100cd565b6100de6101583660046104ca565b6102cd565b6001546001600160a01b0316610132565b6100de61017c366004610493565b610379565b6101aa61018f3660046104b3565b60036020525f908152604090205467ffffffffffffffff1681565b60405167ffffffffffffffff90911681526020016100cd565b6101cb6103e9565b6101d45f610415565b565b60015433906001600160a01b031681146102135760405163118cdaa760e01b81526001600160a01b03821660048201526024015b60405180910390fd5b61021c81610415565b50565b335f9081526002602052604090205460ff16801561023c57508015155b6102785760405162461bcd60e51b815260206004820152600d60248201526c7265706f72746572206f6e6c7960981b604482015260640161020a565b5f81815260036020526040808220805467ffffffffffffffff19164267ffffffffffffffff1617905551339183917fdd59e4aa3c05b9531ee7dad58591ac302b3135b948545bff8fe642da4d4d14509190a350565b6102d56103e9565b6001600160a01b03821661031b5760405162461bcd60e51b815260206004820152600d60248201526c3d32b937903932b837b93a32b960991b604482015260640161020a565b6001600160a01b0382165f81815260026020908152604091829020805460ff191685151590811790915591519182527f96870245f52b6c787b393088886fad44ed150dcf41daa1b1ab642edcd2a4219b910160405180910390a25050565b6103816103e9565b600180546001600160a01b0383166001600160a01b031990911681179091556103b15f546001600160a01b031690565b6001600160a01b03167f38d16b8cac22d99fc7c124b9cd0de2d3fa1faef420bfe791d8c362d765e2270060405160405180910390a350565b5f546001600160a01b031633146101d45760405163118cdaa760e01b815233600482015260240161020a565b600180546001600160a01b031916905561021c815f80546001600160a01b038381166001600160a01b0319831681178455604051919092169283917f8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e09190a35050565b80356001600160a01b038116811461048e575f80fd5b919050565b5f602082840312156104a3575f80fd5b6104ac82610478565b9392505050565b5f602082840312156104c3575f80fd5b5035919050565b5f80604083850312156104db575f80fd5b6104e483610478565b9150602083013580151581146104f8575f80fd5b80915050925092905056fea26469706673582212200139f3cd95017a951e5eaad8db92bb625d9a3a406557377b7d54bcc09df1994b64736f6c634300081a0033"
+}

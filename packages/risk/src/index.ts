@@ -1,0 +1,2 @@
+import type { Allocation,Portfolio } from "@cendoris/types";
+export function scorePortfolio(allocations:Allocation[]):Portfolio {return{allocations,risk:Math.round(allocations.reduce((s,a)=>s+a.risk*a.weight,0)/100),expectedReturn:+(allocations.reduce((s,a)=>s+a.expectedReturn*a.weight,0)/100).toFixed(2),liquidity:Math.round(allocations.filter(a=>a.symbol==="USDT"||a.symbol==="USTB").reduce((s,a)=>s+a.weight,0))}}

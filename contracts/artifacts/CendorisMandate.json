@@ -1,0 +1,130 @@
+{
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint16",
+              "name": "maxRisk",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "minLiquidityBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxAssetExposureBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "bool",
+              "name": "canRebalance",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "canHedge",
+              "type": "bool"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct CendorisMandate.Rules",
+          "name": "rules",
+          "type": "tuple"
+        }
+      ],
+      "name": "MandateSet",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "rules",
+      "outputs": [
+        {
+          "internalType": "uint16",
+          "name": "maxRisk",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "minLiquidityBps",
+          "type": "uint16"
+        },
+        {
+          "internalType": "uint16",
+          "name": "maxAssetExposureBps",
+          "type": "uint16"
+        },
+        {
+          "internalType": "bool",
+          "name": "canRebalance",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "canHedge",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint16",
+              "name": "maxRisk",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "minLiquidityBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "uint16",
+              "name": "maxAssetExposureBps",
+              "type": "uint16"
+            },
+            {
+              "internalType": "bool",
+              "name": "canRebalance",
+              "type": "bool"
+            },
+            {
+              "internalType": "bool",
+              "name": "canHedge",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct CendorisMandate.Rules",
+          "name": "next",
+          "type": "tuple"
+        }
+      ],
+      "name": "setMandate",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080604052348015600e575f80fd5b506103bd8061001c5f395ff3fe608060405234801561000f575f80fd5b5060043610610034575f3560e01c806302a17019146100385780633c93c0311461004d575b5f80fd5b61004b6100463660046101a7565b6100d8565b005b6100a161005b3660046101c0565b5f6020819052908152604090205461ffff808216916201000081048216916401000000008204169060ff6601000000000000820481169167010000000000000090041685565b6040805161ffff96871681529486166020860152929094168383015215156060830152911515608082015290519081900360a00190f35b60646100e760208301836101ff565b61ffff161115801561010e575061271061010760408301602084016101ff565b61ffff1611155b61014e5760405162461bcd60e51b815260206004820152600d60248201526c696e76616c69642072756c657360981b604482015260640160405180910390fd5b335f90815260208190526040902081906101688282610239565b505060405133907fd43063431b0499a8c8f17206e3ed73fe551aec3c10a4d041295b68f6688779bb9061019c908490610312565b60405180910390a250565b5f60a08284031280156101b8575f80fd5b509092915050565b5f602082840312156101d0575f80fd5b81356001600160a01b03811681146101e6575f80fd5b9392505050565b61ffff811681146101fc575f80fd5b50565b5f6020828403121561020f575f80fd5b81356101e6816101ed565b80151581146101fc575f80fd5b5f81356102338161021a565b92915050565b8135610244816101ed565b61ffff8116905081548161ffff1982161783556020840135610265816101ed565b63ffff00008160101b168363ffffffff19841617178455505050604082013561028d816101ed565b815465ffff00000000191660209190911b65ffff00000000161781555f60608301356102b88161021a565b825466ff000000000000191681151560301b66ff0000000000001617835590505061030e6102e860808401610227565b82805467ff00000000000000191691151560381b67ff0000000000000016919091179055565b5050565b60a081018235610321816101ed565b61ffff1682526020830135610335816101ed565b61ffff166020830152604083013561034c816101ed565b61ffff16604083015260608301356103638161021a565b1515606083015260808301356103788161021a565b8015156080840152509291505056fea26469706673582212206c1d057b02094b3f186adbd70978ea975e7693289cf9aecdb46a88beed1accde64736f6c634300081a0033"
+}

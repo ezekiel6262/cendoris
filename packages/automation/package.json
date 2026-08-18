@@ -1,0 +1,1 @@
+{"name":"@cendoris/automation","version":"0.0.0","type":"module","exports":"./src/index.ts","scripts":{"test":"vitest run"},"dependencies":{"@cendoris/types":"workspace:*","@cendoris/mandate":"workspace:*","@cendoris/intelligence":"workspace:*","@cendoris/capital":"workspace:*","@cendoris/policy":"workspace:*","@cendoris/risk":"workspace:*"},"devDependencies":{"vitest":"^3.2.4"}}

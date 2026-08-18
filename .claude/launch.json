@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "pnpm@11.19.0", "--filter", "@cendoris/web", "dev"],
+      "port": 3000
+    }
+  ]
+}

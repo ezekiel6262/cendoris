@@ -1,0 +1,1 @@
+import{runDemo}from"@cendoris/automation";const d=await runDemo();console.log(`[Cendoris Worker] ${d.audit.find(e=>e.type==="MARKET_SHOCK")?.summary}`);console.log(`[Cendoris Worker] ${d.audit.at(-1)?.summary}`);

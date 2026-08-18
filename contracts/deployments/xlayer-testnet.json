@@ -1,0 +1,22 @@
+{
+  "chainId": 1952,
+  "rpcUrl": "https://testrpc.xlayer.tech",
+  "admin": "0xACEd788E9EC2803e3ABD35e46fe553ff7DD6Be4D",
+  "recipients": [
+    "0x9f97bA7dae00Ab33929b0F2753f6d8B94C490E14",
+    "0xb151f67c9aE18de4d820F67d2b832926957A0d62",
+    "0x6Da0F4c7a002984BAb4Ea26f4d58E983715786a3",
+    "0xAB92fC163f7b1a4D90382d0dF1A0c7E586166830",
+    "0xAca01AC434faEE16127868098a842cE498A70600"
+  ],
+  "contracts": {
+    "registry": "0xE08e55d14d34b4953c98911ef0Ee608Ce767596d",
+    "riskOracle": "0xcb9D1bDf5b0E6aA8b115C3C3946097E214652393",
+    "strategyRegistry": "0x156A1653a28d6A5b65D4df4D1D04b447148aF253",
+    "policyManager": "0x4E7e7D707DbF9a5B108b6FD62F001FccF56C1477",
+    "vaultFactory": "0xf6e9EeED7e82AB49b29270349Fbb26CF72eC1aDa",
+    "executionRouter": "0xea2A0c1D66fA7f3556F32e5e7D52B82cDC502b0B",
+    "usdt": "0xc6D7A678828D3C88178A604EedcEAeF291C00d3D",
+    "adapter": "0x3e9d84c89aBAa807829f33f3D82C2588AC0BA7bB"
+  }
+}

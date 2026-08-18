@@ -1,0 +1,1 @@
+import{describe,expect,it}from"vitest";import{runDemo}from"./index";describe("vertical slice",()=>{it("restores compliance",async()=>{const d=await runDemo();expect(d.initialPolicy.valid).toBe(true);expect(d.shockPolicy.valid).toBe(false);expect(d.rebalancePolicy.valid).toBe(true);expect(d.audit).toHaveLength(8)})});
