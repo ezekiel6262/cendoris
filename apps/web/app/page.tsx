@@ -16,21 +16,23 @@ const views:Record<string,{kicker:string;title:string;copy:string;stats:[string,
 export default function Home(){
   const[phase,setPhase]=useState(0);const[section,setSection]=useState("Command");const[walletAccount,setWalletAccount]=useState("");const[walletStatus,setWalletStatus]=useState("");const[walletError,setWalletError]=useState("");const[receipt,setReceipt]=useState<any>(null);
   const[text,setText]=useState("Manage 100,000 USDT. Target 8% return, risk ceiling around 40, maintain at least 20% liquidity, no single asset over 35%.");
-  const[data,setData]=useState<any>(null);const[loadingDemo,setLoadingDemo]=useState(true);const[demoError,setDemoError]=useState("");
+  const[data,setData]=useState<any>(null);const[loadingDemo,setLoadingDemo]=useState(false);const[demoError,setDemoError]=useState("");
+  const[compiledText,setCompiledText]=useState("");
   const[loadingRecovery,setLoadingRecovery]=useState(false);const[recoveryError,setRecoveryError]=useState("");
-  useEffect(()=>{
-    const controller=new AbortController();
-    const timer=setTimeout(async()=>{
-      setLoadingDemo(true);setDemoError("");
-      try{
-        const response=await fetch("/api/demo",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({text}),signal:controller.signal});
-        const result=await response.json();
-        if(!response.ok)throw new Error(result.error??"Cendoris could not compile this strategy.");
-        if(!controller.signal.aborted){setData(result);setPhase(0);setLoadingDemo(false)}
-      }catch(error){if((error as any)?.name!=="AbortError"){setDemoError(error instanceof Error?error.message:"Cendoris could not compile this strategy.");setLoadingDemo(false)}}
-    },text===  "Manage 100,000 USDT. Target 8% return, risk ceiling around 40, maintain at least 20% liquidity, no single asset over 35%."?0:600);
-    return()=>{controller.abort();clearTimeout(timer)}
-  },[text]);
+  // Gemini is only ever called from an explicit user action. An identical mandate
+  // reuses the result already on screen instead of billing another call.
+  const stale=!data||compiledText!==text;
+  const compile=async()=>{
+    if(loadingDemo||!stale)return;
+    setLoadingDemo(true);setDemoError("");
+    try{
+      const response=await fetch("/api/demo",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({text})});
+      const result=await response.json();
+      if(!response.ok)throw new Error(result.error??"Cendoris could not compile this strategy.");
+      setData(result);setCompiledText(text);setPhase(0);
+    }catch(error){setDemoError(error instanceof Error?error.message:"Cendoris could not compile this strategy.")}
+    finally{setLoadingDemo(false)}
+  };
   const portfolio=useMemo(()=>!data?null:phase<2?data.initial:phase===2?data.shocked:data.rebalanced,[data,phase]);
   const triggerShock=async()=>{
     if(!data||loadingRecovery)return;
@@ -48,16 +50,27 @@ export default function Home(){
   const activate=async()=>{setWalletError("");try{const session=await provisionWalletVault(data.mandate,setWalletStatus);setWalletAccount(session.account);setSection("Decision review")}catch(error){setWalletStatus("");setWalletError(error instanceof Error?error.message:"Vault setup failed")}};
   const execute=async()=>{const nextReceipt=await executeWalletPlan(data.initial,data.mandate.capital);setReceipt(nextReceipt);setPhase(1);setSection("Command");return nextReceipt};
   const executeRecovery=async()=>{const nextReceipt=await executeWalletPlan(data.rebalanced,data.mandate.capital);setReceipt(nextReceipt);setPhase(3);setSection("Command");return nextReceipt};
-  if(!data)return <div className="app"><main style={{gridColumn:"1/-1",display:"grid",placeItems:"center",height:"100vh"}}>{demoError?<span style={{color:"var(--red)",fontSize:12}}>{demoError}</span>:<span style={{display:"flex",gap:10,alignItems:"center",color:"var(--muted)",fontSize:12}}><Loader2 size={16} className="spin"/>Cendoris is compiling your strategy…</span>}</main></div>;
+  if(!data)return <div className="app"><main style={{gridColumn:"1/-1",display:"grid",placeItems:"center",minHeight:"100vh",padding:24}}>
+    <div className="card" style={{maxWidth:560,width:"100%"}}>
+      <div className="brand" style={{color:"var(--ink)",marginBottom:26}}><span style={{borderColor:"var(--line)"}}>C</span><b>CENDORIS</b></div>
+      <span className="eyebrow">CAPITAL STRATEGY</span>
+      <h2>Tell Cendoris what your capital should achieve.</h2>
+      <p className="note" style={{marginTop:10}}>Plain language in, structured guardrails out. Gemini runs only when you press compile, so nothing is spent until you ask for a decision.</p>
+      <textarea value={text} onChange={(e:any)=>setText(e.target.value)} aria-label="Describe your capital strategy" disabled={loadingDemo}/>
+      <button className="primary" onClick={compile} disabled={loadingDemo}>{loadingDemo?<><Loader2 size={16} className="spin"/>Compiling your strategy…</>:<><BrainCircuit size={16}/>Compile strategy<ChevronRight size={16}/></>}</button>
+      {demoError&&<p className="note" style={{color:"var(--red)",marginTop:12}}>{demoError}</p>}
+      <p className="note" style={{marginTop:14}}>Runs two Gemini calls: one to compile your intent into numeric constraints, one to construct the portfolio against live market data.</p>
+    </div>
+  </main></div>;
   return <div className="app"><aside><div className="brand"><span>C</span><b>CENDORIS</b></div><nav>{navigation.map(([Icon,label])=><button className={section===label?"active":""} aria-current={section===label?"page":undefined} onClick={()=>setSection(label)} key={label}><Icon size={17}/>{label}</button>)}</nav><div className="rail"><div><i/><span>{networkLabel}<br/><small>Wallet-signed</small></span></div><button onClick={()=>setSection("Architecture")}><BookOpen size={15}/>Architecture</button></div></aside>
   <main><header><div><p>{section.toUpperCase()}</p><h1>{section==="Command"?"Good morning, Operator.":section}</h1></div><button className="wallet" onClick={connect}><Wallet size={16}/>{walletAccount?`${walletAccount.slice(0,6)}…${walletAccount.slice(-4)}`:"Connect wallet"}</button></header>{(walletStatus||walletError)&&<div className={`walletnotice ${walletError?"error":""}`}>{walletError||walletStatus}</div>}
-  {section==="Command"?<CommandView phase={phase} setPhase={setPhase} text={text} setText={setText} data={data} portfolio={portfolio} open={setSection} receipt={receipt} loadingDemo={loadingDemo} triggerShock={triggerShock} loadingRecovery={loadingRecovery} recoveryError={recoveryError}/>:section==="Strategy"?<StrategyView text={text} setText={setText} data={data} onApprove={activate}/>:section==="Decision review"?<DecisionReview data={data} onBack={()=>setSection("Strategy")} onExecute={execute}/>:section==="Recovery review"?<RecoveryReview data={data} onBack={()=>setSection("Command")} onExecute={executeRecovery}/>:section==="Credit"?<CreditView/>:section==="Markets"?<MarketsView data={data}/>:section==="Portfolio"?<PortfolioView data={data} portfolio={portfolio}/>:section==="Intelligence"?<IntelligenceView data={data}/>:section==="Automations"?<AutomationsView data={data}/>:<SectionView section={section} open={setSection}/>}</main></div>
+  {section==="Command"?<CommandView phase={phase} setPhase={setPhase} text={text} setText={setText} data={data} portfolio={portfolio} open={setSection} receipt={receipt} loadingDemo={loadingDemo} triggerShock={triggerShock} loadingRecovery={loadingRecovery} recoveryError={recoveryError} compile={compile} stale={stale} demoError={demoError}/>:section==="Strategy"?<StrategyView text={text} setText={setText} data={data} onApprove={activate} compile={compile} stale={stale} loadingDemo={loadingDemo}/>:section==="Decision review"?<DecisionReview data={data} onBack={()=>setSection("Strategy")} onExecute={execute}/>:section==="Recovery review"?<RecoveryReview data={data} onBack={()=>setSection("Command")} onExecute={executeRecovery}/>:section==="Credit"?<CreditView/>:section==="Markets"?<MarketsView data={data}/>:section==="Portfolio"?<PortfolioView data={data} portfolio={portfolio}/>:section==="Intelligence"?<IntelligenceView data={data}/>:section==="Automations"?<AutomationsView data={data}/>:<SectionView section={section} open={setSection}/>}</main></div>
 }
 
-function CommandView({phase,setPhase,text,setText,data,portfolio,open,receipt,loadingDemo,triggerShock,loadingRecovery,recoveryError}:any){const risk=portfolio.risk;const status=phase===2?"ACTION REQUIRED":"WITHIN STRATEGY";return <>
+function CommandView({phase,setPhase,text,setText,data,portfolio,open,receipt,loadingDemo,triggerShock,loadingRecovery,recoveryError,compile,stale,demoError}:any){const risk=portfolio.risk;const status=phase===2?"ACTION REQUIRED":"WITHIN STRATEGY";return <>
   {receipt&&<div className="chainreceipt"><span><i/>LOCAL EVM · CHAIN {receipt.chainId}</span><b>{receipt.status} · {receipt.valueMoved} USDT moved</b><code>{receipt.transactionHash.slice(0,18)}…</code><small>Block {receipt.blockNumber} · {receipt.gasUsed} gas</small></div>}
   <section className="metrics"><Metric label="Capital under intelligence" value={money(data.mandate.capital)} delta="Active strategy"/><Metric label="Expected return" value={`${portfolio.expectedReturn}%`} delta="Net annualized"/><Metric label="Portfolio risk" value={`${risk} / 100`} delta={phase===2?"Above mandate ceiling":`Policy maximum ${data.mandate.maxRisk}`} warn={phase===2}/><Metric label="Available liquidity" value={`${portfolio.liquidity}%`} delta={`Minimum ${data.mandate.minLiquidity}%`}/></section>
-  <section className="grid"><div className="card mandate"><div className="cardtop"><div><span className="eyebrow">ACTIVE CAPITAL STRATEGY</span><h2>Capital, governed by your intent.</h2></div><span className={`badge ${phase===2?"bad":""}`}>{status}</span></div><textarea value={text} onChange={(e:any)=>setText(e.target.value)} aria-label="Capital strategy"/>{loadingDemo&&<p className="note" style={{marginBottom:8}}><Loader2 size={11} className="spin"/> Gemini is recompiling the mandate…</p>}<div className="constraints"><span>Target <b>{data.mandate.targetReturn}%</b></span><span>Risk ceiling <b>{data.mandate.maxRisk}</b></span><span>Min. liquid <b>{data.mandate.minLiquidity}%</b></span><span>Max. position <b>{data.mandate.maxAssetExposure}%</b></span></div><button className="primary" onClick={()=>phase===0?open("Strategy"):setPhase(Math.max(1,phase))}><BrainCircuit size={16}/>{phase===0?"Review & activate strategy":"Strategy active"}<ChevronRight size={16}/></button></div>
+  <section className="grid"><div className="card mandate"><div className="cardtop"><div><span className="eyebrow">ACTIVE CAPITAL STRATEGY</span><h2>Capital, governed by your intent.</h2></div><span className={`badge ${phase===2?"bad":""}`}>{status}</span></div><textarea value={text} onChange={(e:any)=>setText(e.target.value)} aria-label="Capital strategy"/>{loadingDemo?<p className="note" style={{marginBottom:8}}><Loader2 size={11} className="spin"/> Gemini is recompiling the mandate…</p>:stale?<button className="secondary" style={{marginTop:0,marginBottom:10}} onClick={compile}><BrainCircuit size={15}/>Recompile with Gemini</button>:null}{demoError&&<p className="note" style={{color:"var(--red)",marginBottom:8}}>{demoError}</p>}<div className="constraints"><span>Target <b>{data.mandate.targetReturn}%</b></span><span>Risk ceiling <b>{data.mandate.maxRisk}</b></span><span>Min. liquid <b>{data.mandate.minLiquidity}%</b></span><span>Max. position <b>{data.mandate.maxAssetExposure}%</b></span></div><button className="primary" onClick={()=>phase===0?open("Strategy"):setPhase(Math.max(1,phase))}><BrainCircuit size={16}/>{phase===0?"Review & activate strategy":"Strategy active"}<ChevronRight size={16}/></button></div>
   <div className="card allocation"><div className="cardtop"><div><span className="eyebrow">LIVE ALLOCATION</span><h2>{phase===2?"Risk threshold breached":"Portfolio construction"}</h2></div><button className="icon" aria-label="Open portfolio" onClick={()=>open("Portfolio")}><ArrowUpRight size={17}/></button></div><div className="bar">{portfolio.allocations.map((a:any,i:number)=><i key={a.assetId} style={{width:`${a.weight}%`}} className={`c${i}`}/>)}</div><div className="holdings">{portfolio.allocations.map((a:any,i:number)=><div key={a.assetId}><i className={`dot c${i}`}/><span><b>{a.symbol}</b><small>{data.assets.find((x:any)=>x.id===a.assetId)?.name}</small></span><strong>{a.weight}%<small>{money(a.amount)}</small></strong></div>)}</div></div>
   <div className="card control"><div className="cardtop"><div><span className="eyebrow">DECISION CONTROL</span><h2>Intelligence has no custody.</h2></div><ShieldCheck size={22}/></div><div className="pipeline">{[[BrainCircuit,"AI proposes","Structured ActionPlan"],[ShieldCheck,"Policy validates","Deterministic constraints"],[CircleDollarSign,"Execution acts","Non-custodial router"]].map(([Icon,a,b],i)=><div key={String(a)}><span><Icon size={17}/></span><p><b>{String(a)}</b><small>{String(b)}</small></p>{i<2&&<ChevronRight size={15}/>}</div>)}</div><p className="note">Every recommendation is generated by Gemini, policy-checked and recorded before value can move.</p></div>
   <div className="card event"><span className="eyebrow">AUTOMATION SCENARIO</span><div className="shock"><div><TrendingUp size={20}/><span><b>NVDAx market shock</b><small>What-if stress test, applied to today's real NVDA price</small></span></div><strong>-18.0%</strong></div><div className="riskline"><span>Portfolio risk</span><b>{phase<2?(data.shocked?`${data.initial.risk} → ${data.shocked.risk}`:`${data.initial.risk} → ?`):`${data.shocked.risk} → ${data.rebalanced.risk}`}</b></div>{recoveryError&&<p className="executionerror" style={{margin:"10px 0 0"}}>{recoveryError}</p>}<button className={phase===2?"danger":"secondary"} onClick={()=>phase<2?triggerShock():phase===2?open("Recovery review"):undefined} disabled={phase===0||phase===3||loadingRecovery}>{loadingRecovery?<><Loader2 size={15} className="spin"/>Computing recovery plan…</>:phase<2?<><Play size={15}/>Trigger market shock</>:phase===2?<><RefreshCw size={15}/>Review recovery plan</>:<><Check size={15}/>Portfolio restored</>}</button></div>
@@ -102,15 +115,15 @@ function DecisionReview({data,onBack,onExecute}:{data:any;onBack:()=>void;onExec
   </section>
 }
 
-function StrategyView({text,setText,data,onApprove}:{text:string;setText:(value:string)=>void;data:any;onApprove:()=>void}){
+function StrategyView({text,setText,data,onApprove,compile,stale,loadingDemo}:{text:string;setText:(value:string)=>void;data:any;onApprove:()=>void;compile:()=>void;stale:boolean;loadingDemo:boolean}){
   const presets=[
     ["Balanced income","Manage 100,000 USDT. Target 8% return, risk ceiling around 40, maintain at least 20% liquidity, no single asset over 35%."],
     ["Capital preservation","Manage 100,000 USDT. Prioritize capital preservation, target 5% return, maintain at least 40% liquidity, no single asset over 20%."],
     ["Growth","Manage 100,000 USDT. Target 12% return, accept higher risk, maintain at least 15% liquidity, no single asset over 35%."]
   ];
   return <section className="strategyview">
-    <div className="strategyintro"><span className="eyebrow">CAPITAL STRATEGY BUILDER</span><h2>Tell Cendoris what your capital should achieve.</h2><p>Use plain language. Gemini translates your goals into structured guardrails for you to review. Nothing moves until you approve.</p><div className="presets">{presets.map(([label,value])=><button key={label} onClick={()=>setText(value)}>{label}</button>)}</div><textarea value={text} onChange={e=>setText(e.target.value)} aria-label="Describe your capital strategy"/></div>
-    <div className="strategyreview"><div className="cardtop"><div><span className="eyebrow">STRUCTURED GUARDRAILS</span><h2>Review before activation</h2></div><span className="badge">READY</span></div><div className="guardrails"><span><small>Capital</small><b>{money(data.mandate.capital)}</b></span><span><small>Return objective</small><b>{data.mandate.targetReturn}% annually</b></span><span><small>Risk ceiling</small><b>{data.mandate.maxRisk} / 100</b></span><span><small>Liquidity floor</small><b>{data.mandate.minLiquidity}% minimum</b></span><span><small>Position limit</small><b>{data.mandate.maxAssetExposure}% maximum</b></span></div>{data.mandate.rationale&&<p className="note" style={{marginTop:10}}>{data.mandate.rationale}</p>}<div className="approvalnote"><ShieldCheck size={18}/><p><b>You stay in control</b><small>Gemini proposes a portfolio. Deterministic policy checks every action. Your wallet authorizes execution.</small></p></div><button className="primary" onClick={onApprove}><Check size={16}/>Approve strategy & build portfolio</button></div>
+    <div className="strategyintro"><span className="eyebrow">CAPITAL STRATEGY BUILDER</span><h2>Tell Cendoris what your capital should achieve.</h2><p>Use plain language. Gemini translates your goals into structured guardrails for you to review. Nothing moves until you approve.</p><div className="presets">{presets.map(([label,value])=><button key={label} onClick={()=>setText(value)}>{label}</button>)}</div><textarea value={text} onChange={e=>setText(e.target.value)} aria-label="Describe your capital strategy"/><button className={stale?"primary":"secondary"} onClick={compile} disabled={loadingDemo||!stale}>{loadingDemo?<><Loader2 size={16} className="spin"/>Compiling…</>:stale?<><BrainCircuit size={16}/>Compile this strategy</>:<><Check size={16}/>Guardrails match this text</>}</button></div>
+    <div className="strategyreview"><div className="cardtop"><div><span className="eyebrow">STRUCTURED GUARDRAILS</span><h2>Review before activation</h2></div><span className="badge">READY</span></div><div className="guardrails"><span><small>Capital</small><b>{money(data.mandate.capital)}</b></span><span><small>Return objective</small><b>{data.mandate.targetReturn}% annually</b></span><span><small>Risk ceiling</small><b>{data.mandate.maxRisk} / 100</b></span><span><small>Liquidity floor</small><b>{data.mandate.minLiquidity}% minimum</b></span><span><small>Position limit</small><b>{data.mandate.maxAssetExposure}% maximum</b></span></div>{data.mandate.rationale&&<p className="note" style={{marginTop:10}}>{data.mandate.rationale}</p>}<div className="approvalnote"><ShieldCheck size={18}/><p><b>You stay in control</b><small>Gemini proposes a portfolio. Deterministic policy checks every action. Your wallet authorizes execution.</small></p></div><button className="primary" onClick={onApprove} disabled={stale}><Check size={16}/>{stale?"Compile this strategy first":"Approve strategy & build portfolio"}</button></div>
     <div className="strategyflow"><span><b>1</b><small>Describe goals</small></span><i/><span><b>2</b><small>Review guardrails</small></span><i/><span><b>3</b><small>Approve strategy</small></span><i/><span><b>4</b><small>Build portfolio</small></span></div>
   </section>
 }
@@ -147,22 +160,22 @@ function CreditView(){
 }
 
 function MarketsView({data}:{data:any}){
-  const[proposal,setProposal]=useState<any>(null);const[loading,setLoading]=useState(true);const[error,setError]=useState("");
-  useEffect(()=>{
-    let cancelled=false;
-    (async()=>{
-      setLoading(true);setError("");
-      try{const response=await fetch("/api/markets",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({portfolio:data.initial,assets:data.assets})});const result=await response.json();if(!response.ok)throw new Error(result.error??"Market discovery failed.");if(!cancelled)setProposal(result.proposal)}
-      catch(e){if(!cancelled)setError(e instanceof Error?e.message:"Market discovery failed.")}
-      finally{if(!cancelled)setLoading(false)}
-    })();
-    return()=>{cancelled=true}
-  },[data]);
+  const[proposal,setProposal]=useState<any>(null);const[loading,setLoading]=useState(false);const[error,setError]=useState("");
+  // Discovery is a Gemini call, so it runs on request rather than on tab open.
+  const discover=async()=>{
+    if(loading)return;
+    setLoading(true);setError("");
+    try{const response=await fetch("/api/markets",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({portfolio:data.initial,assets:data.assets})});const result=await response.json();if(!response.ok)throw new Error(result.error??"Market discovery failed.");setProposal(result.proposal)}
+    catch(e){setError(e instanceof Error?e.message:"Market discovery failed.")}
+    finally{setLoading(false)}
+  };
   return <section className="sectionview">
     <div className="sectionhero">
       <span className="eyebrow">EXCHANGE OS</span>
       <h2>The market Cendoris would ask Exchange OS to deploy.</h2>
       <p>Gemini reads this portfolio's live correlation and concentration risk and proposes the single highest-value missing market. Exchange OS lets any staked deployer launch a permissionless spot, perpetual or outcome venue on X Layer (XIP-Exchange OS) with shared matching, margin and settlement — this is a proposal Cendoris would submit to that flow, not a live deployment.</p>
+      {!proposal&&!loading&&<button className="primary" style={{maxWidth:320}} onClick={discover}><Network size={16}/>Run market discovery</button>}
+      {proposal&&!loading&&<button className="secondary" style={{maxWidth:320}} onClick={discover}><RefreshCw size={15}/>Run discovery again</button>}
       {loading&&<p className="note" style={{marginTop:20}}><Loader2 size={11} className="spin"/> Scanning the portfolio for unhedged risk…</p>}
       {error&&<p className="executionerror" style={{marginTop:20}}>{error}</p>}
       {proposal&&<div style={{marginTop:26}}>
