@@ -1,14 +1,3 @@
 packages:
   - apps/*
   - packages/*
-# Mirrored in package.json#pnpm. pnpm 11 fails the whole install
-# (ERR_PNPM_IGNORED_BUILDS) if a dependency with a build script is neither
-# approved nor explicitly ignored, so every such package must appear below.
-onlyBuiltDependencies:
-  - "@google/genai"
-  - esbuild
-  - protobufjs
-  - sharp
-ignoredBuiltDependencies:
-  - keccak
-  - secp256k1
